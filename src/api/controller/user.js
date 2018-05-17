@@ -1,6 +1,6 @@
 const Base = require('./base.js');
 const fs = require('fs');
-const _ = require('lodash');
+const _ = require('lodash'); //降低 array、number、objects、string 等等的使用难度
 
 module.exports = class extends Base {
   async infoAction() {
@@ -25,4 +25,7 @@ module.exports = class extends Base {
       return this.success();
     });
   }
+   async __call(){
+        //如果相应的Action不存在则调用该方法
+    }
 };

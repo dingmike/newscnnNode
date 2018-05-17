@@ -32,7 +32,8 @@ module.exports = class extends Base {
 
   async detailAction() {
     const orderId = this.get('orderId');
-    const orderInfo = await this.model('order').where({ user_id: 1, id: orderId }).find();
+    // const orderInfo = await this.model('order').where({ user_id: 1, id: orderId }).find();
+    const orderInfo = await this.model('order').where({id: orderId }).find();
 
     if (think.isEmpty(orderInfo)) {
       return this.fail('订单不存在');
@@ -70,6 +71,22 @@ module.exports = class extends Base {
       handleOption: handleOption
     });
   }
+
+
+    /**
+     * 取消订单
+     * @returns {Promise.<void>}
+     */
+  async cancelAction(){
+        const orderId = this.get('orderId');
+        // 取消收藏
+        let  collectRes = await this.model('order').where({ id: orderId }).delete();
+        console.log('collectRes:' + collectRes)
+        if (collectRes > 0) {
+            return this.success({type: '删除订单！'});
+        }
+        return this.fail('操作失败');
+    }
 
   /**
    * 提交订单
