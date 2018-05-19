@@ -15,7 +15,7 @@ module.exports = class extends Base {
     const typeId = this.post('typeId');
     const valueId = this.post('valueId');
     const content = this.post('content');
-    const buffer = Buffer.from(content);
+    const buffer = Buffer.from(content); // 二进制数据类型
     const insertId = await this.model('comment').add({
       type_id: typeId,
       value_id: valueId,
