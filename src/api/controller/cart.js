@@ -230,7 +230,7 @@ module.exports = class extends Base {
    */
   async checkoutAction() {
     const addressId = this.get('addressId'); // 收货地址id
-    // const couponId = this.get('couponId'); // 使用的优惠券id
+      // const couponId = this.get('couponId'); // 使用的优惠券id //暂时没使用
 
     // 选择的收货地址
     let checkedAddress = null;
@@ -256,7 +256,7 @@ module.exports = class extends Base {
       return v.checked === 1;
     });
 
-    // 获取可用的优惠券信息，功能还示实现
+    // 获取可用的优惠券信息，功能还未实现
     const couponList = await this.model('user_coupon').select();
     const couponPrice = 0.00; // 使用优惠券减免的金额
 
