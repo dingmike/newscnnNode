@@ -3,7 +3,7 @@ module.exports = class extends think.Controller {
     // 根据token值获取用户id
     think.token = this.ctx.header['x-nideshop-token'] || '';
     const tokenSerivce = think.service('token', 'api');
-    think.userId = await tokenSerivce.getUserId();
+    think.userId = await tokenSerivce.getUserId(); // 登录之前就存储用户id
 
     const publicController = this.config('publicController');
     const publicAction = this.config('publicAction');
