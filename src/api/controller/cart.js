@@ -50,11 +50,11 @@ module.exports = class extends Base {
         let checkedGoodsCount = 0;
         let checkedGoodsAmount = 0.00;
         for (const cartItem of cartList) {
-            goodsCount += cartItem.number;
-            goodsAmount += cartItem.number * cartItem.retail_price;
+            goodsCount = cartItem.number;
+            goodsAmount = cartItem.number * cartItem.retail_price;
             if (!think.isEmpty(cartItem.checked)) {
-                checkedGoodsCount += cartItem.number;
-                checkedGoodsAmount += cartItem.number * cartItem.retail_price;
+                checkedGoodsCount = cartItem.number;
+                checkedGoodsAmount = cartItem.number * cartItem.retail_price;
             }
 
             // 查找商品的图片
@@ -103,7 +103,7 @@ module.exports = class extends Base {
         }
 
         // 判断购物车中是否存在此规格商品
-        const cartInfo = await this.model('cart').where({goods_id: goodsId, product_id: productId}).find();
+        const cartInfo = await this.model('cart').where({goods_id: goodsId, product_id: productId, buy_one: 0}).find();
         if (think.isEmpty(cartInfo)) {
             // 添加操作
 
@@ -125,6 +125,7 @@ module.exports = class extends Base {
                 list_pic_url: goodsInfo.list_pic_url,
                 number: number,
                 session_id: 1,
+                buy_one: 0,
                 user_id: think.userId,
                 retail_price: productInfo.retail_price,
                 market_price: productInfo.retail_price,
@@ -133,7 +134,7 @@ module.exports = class extends Base {
                 checked: 1
             };
 
-            await this.model('cart').thenAdd(cartData, {product_id: productId});
+            await this.model('cart').thenAdd(cartData, {product_id: productId, buy_one: 0});
         } else {
             // 如果已经存在购物车中，则数量增加
             if (productInfo.goods_number < (number + cartInfo.number)) {
@@ -143,7 +144,8 @@ module.exports = class extends Base {
             await this.model('cart').where({
                 goods_id: goodsId,
                 product_id: productId,
-                id: cartInfo.id
+                id: cartInfo.id,
+                buy_one: 0
             }).increment('number', number);
         }
         return this.success(await this.getCart());
@@ -157,8 +159,10 @@ module.exports = class extends Base {
     async addOneAction() {
         const goodsId = this.post('goodsId');
         const productId = this.post('productId');
-        const number = 1; // 立即购买数量都为1
+        const number = this.post('number'); // 立即购买数量
         const buyOne = this.post('buyOne');  // 立即购买
+
+        console.log('数量：：：：：：：' + typeof number)
 
         // 判断商品是否可以购买
         const goodsInfo = await this.model('goods').where({id: goodsId}).find();
@@ -194,7 +198,7 @@ module.exports = class extends Base {
                 goods_name: goodsInfo.name,
                 list_pic_url: goodsInfo.list_pic_url,
                 number: number,
-                buy_one: buyOne,
+                buy_one: 1,
                 session_id: 1,
                 user_id: think.userId,
                 retail_price: productInfo.retail_price,
@@ -203,21 +207,24 @@ module.exports = class extends Base {
                 goods_specifition_ids: productInfo.goods_specification_ids,
                 checked: 1
             };
-
-            await this.model('cart').thenAdd(cartData, {product_id: productId});
-        } else { //购物车存在立即购买过的商品就设置数量1
-            if (productInfo.goods_number < (number)) {
+            console.log('数量aaaaaaaaaaa：：：：：：：' + number)
+            await this.model('cart').thenAdd(cartData, {product_id: productId, buy_one: 1});
+        }else{
+            // 如果已经存在购物车中，则数量增加
+            if (productInfo.goods_number < (number + cartInfo.number)) {
                 return this.fail(400, '库存不足');
             }
 
+            // 更新数量到最新
             await this.model('cart').where({
                 goods_id: goodsId,
                 product_id: productId,
                 id: cartInfo.id,
                 buy_one: 1
-            }).increment('number', 1);
+            }).update({number : number});
         }
-        return this.success(await this.getCart());
+        // return this.success(await this.getCart());
+        return this.success();
     }
 
 
@@ -229,7 +236,7 @@ module.exports = class extends Base {
         const number = parseInt(this.post('number')); // 不是
 
         // 取得规格的信息,判断规格库存
-        const productInfo = await this.model('product').where({goods_id: goodsId, id: productId, buy_one: 0}).find();
+        const productInfo = await this.model('product').where({goods_id: goodsId, id: productId}).find();
         if (think.isEmpty(productInfo) || productInfo.goods_number < number) {
             return this.fail(400, '库存不足');
         }
