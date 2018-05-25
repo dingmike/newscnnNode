@@ -1,3 +1,6 @@
+
+// 模型文件放在 src/model/ 目录下（多模块项目为 src/common/model 以及 src/[module]/model），继承模型基类 think.Model
+
 module.exports = class extends think.Model {
   /**
    * 获取商品的product

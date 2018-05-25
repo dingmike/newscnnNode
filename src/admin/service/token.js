@@ -3,7 +3,7 @@ const secret = 'SLDLKKDS323ssdd@#@@gf';
 
 module.exports = class extends think.Service {
   /**
-   * 根据header中的X-Nideshop-Token值获取用户id
+   * 根据header中的X-Nideshop-Token值获取用户id  x-fusekey-token
    */
   async getUserId() {
     const token = think.token;

@@ -4,7 +4,7 @@ const path = require('path');
 const database = require('./database.js');
 
 const isDev = think.env === 'development';
-
+// 模型由于要支持多种数据库，所以配置文件的格式为 Adapter 的方式，文件路径为 src/config/adapter.js（多模块项目下为 src/common/config/adapter.js）
 /**
  * cache adapter config
  * @type {Object}
