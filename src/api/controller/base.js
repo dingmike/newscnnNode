@@ -2,6 +2,7 @@ module.exports = class extends think.Controller {
   async __before() {
     // 根据token值获取用户id
     think.token = this.ctx.header['x-nideshop-token'] || '';
+    console.log('headerToken: ' + think.token)
     const tokenSerivce = think.service('token', 'api');
     think.userId = await tokenSerivce.getUserId(); // 登录之前就存储用户id
 

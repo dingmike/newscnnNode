@@ -16,6 +16,21 @@ module.exports = class extends Base {
     return this.success(data);
   }
 
+  /*
+  *
+  * userInfo action
+  * @return {promise} []
+  * */
+    async userInfoAction() {
+        const id = this.get('id');
+        const model = this.model('user');
+        const data = await model.where({id: id}).find();
+
+        return this.success(data);
+    }
+
+
+
   async infoAction() {
     const id = this.get('id');
     const model = this.model('user');
