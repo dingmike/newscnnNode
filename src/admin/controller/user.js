@@ -18,13 +18,31 @@ module.exports = class extends Base {
 
   /*
   *
-  * userInfo action
+  * admin user info action
   * @return {promise} []
   * */
-    async userInfoAction() {
+    async adminInfoAction() {
         const id = this.get('id');
-        const model = this.model('user');
-        const data = await model.where({id: id}).find();
+        console.log('我的ID：：：：：：：：：：：：：：：：' + id)
+      /*  const model = this.model('admin');
+        const data = await model.where({id: id}).find();*/
+        const data = await this.model('admin').alias('ad')
+            .field(['ad.*', 'ar.role_code'])
+            .join({
+                table: 'admin_role',
+                join: 'inner',
+                as: 'ar',
+                on: ['id', 'user_id']
+            })
+            .join({
+                table:'sys_role',
+                join: 'inner',
+                as: 'sr',
+                on: ['role_code']
+            })
+            .where({user_id: id}).select();
+
+console.log('数据——————————————————————————：' + data)
 
         return this.success(data);
     }
