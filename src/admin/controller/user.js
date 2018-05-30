@@ -24,10 +24,8 @@ module.exports = class extends Base {
     async adminInfoAction() {
         const id = this.get('id');
         console.log('我的ID：：：：：：：：：：：：：：：：' + id)
-      /*  const model = this.model('admin');
-        const data = await model.where({id: id}).find();*/
         const data = await this.model('admin').alias('ad')
-            .field(['ad.*', 'ar.role_code'])
+            .field(['ad.username','ad.id','ad.avatar', 'ar.role_code', 'sr.role_name'])
             .join({
                 table: 'admin_role',
                 join: 'inner',
@@ -38,13 +36,29 @@ module.exports = class extends Base {
                 table:'sys_role',
                 join: 'inner',
                 as: 'sr',
-                on: ['role_code']
+                on: ['ar.role_code','role_code']
             })
             .where({user_id: id}).select();
 
-console.log('数据——————————————————————————：' + data)
+         console.log('数据——————————————————————————：' +  data[0]);
 
-        return this.success(data);
+        let adminData = {};
+        let rolesArr = [];
+        if(data.length>1){
+             let info = data[0];
+             for(let i=0;i<data.length; i++){
+                 rolesArr.push({role_code: data[i].role_code, role_name: data[i].role_name});
+             }
+             adminData['roles']=rolesArr;
+        }else{
+             rolesArr.push({role_code: data[0].role_code, role_name: data[0].role_name});
+             adminData['roles']=rolesArr;
+        }
+
+        adminData['username']=data[0].username;
+        adminData['id']=data[0].id;
+        adminData['avatar']=data[0].avatar;
+        return this.success(adminData);
     }
 
 
