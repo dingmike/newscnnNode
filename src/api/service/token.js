@@ -3,7 +3,7 @@ const secret = 'SLDLKKDS323ssdd@#@@gf';
 
 module.exports = class extends think.Service {
   /**
-   * 根据header中的X-Nideshop-Token值获取用户id
+   * 根据header中的x-Nideshop-Token值获取用户id
    */
   async getUserId() {
     const token = think.token;
@@ -23,6 +23,7 @@ module.exports = class extends think.Service {
    * 根据值获取用户信息
    */
   async getUserInfo() {
+      console.log('userInfo-userId:-----------------------------------------')
     const userId = await this.getUserId();
     if (userId <= 0) {
       return null;
@@ -34,6 +35,7 @@ module.exports = class extends think.Service {
   }
 
   async create(userInfo) {
+    console.log('userInfo-userId:' + userInfo.user_id)
     const token = jwt.sign(userInfo, secret);
     return token;
   }
