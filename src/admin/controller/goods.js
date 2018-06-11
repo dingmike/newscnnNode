@@ -37,6 +37,20 @@ module.exports = class extends Base {
         return this.success(data);
     }
 
+    /**
+     * down goods action
+     * @params id
+     * @return {Promise} []
+     */
+    async downUpAction() {
+        const id = this.post('id');
+        const is_on_sale = this.post('isOnSale');
+        const model = this.model('goods');
+        console.log('name-------------------------: ' + name)
+        let data = await model.where({id: id}).update({is_on_sale: is_on_sale});
+        return this.success(data);
+    }
+
 
     async infoAction() {
     const id = this.get('id');
