@@ -2,16 +2,22 @@ const Base = require('./base.js');
 
 module.exports = class extends Base {
   /**
-   * index action
+   * list action
    * @return {Promise} []
    */
-  async indexAction() {
+  async listAction() {
     const page = this.get('page') || 1;
     const size = this.get('size') || 10;
     const name = this.get('name') || '';
-
+    const isOnSale = this.get('isOnSale');
     const model = this.model('goods');
-    const data = await model.where({name: ['like', `%${name}%`]}).order(['id DESC']).page(page, size).countSelect();
+    let  data;
+    console.log('isOnSale-------------------------: ' + isOnSale)
+    if(isOnSale === 'null'||isOnSale === ''||isOnSale === null||isOnSale === undefined||isOnSale === 'undefined'){
+         data = await model.where({name: ['like', `%${name}%`]}).field('id,category_id, name, goods_number, is_on_sale, add_time, sort_order, retail_price, sell_volume, primary_pic_url, is_hot, is_limited').order(['id DESC']).page(page, size).countSelect();
+    }else{
+         data = await model.where({name: ['like', `%${name}%`], is_on_sale: isOnSale}).field('id,category_id, name, goods_number, is_on_sale, add_time, sort_order, retail_price, sell_volume, primary_pic_url, is_hot, is_limited').order(['id DESC']).page(page, size).countSelect();
+    }
 
     return this.success(data);
   }
