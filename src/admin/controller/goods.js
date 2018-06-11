@@ -22,7 +22,23 @@ module.exports = class extends Base {
     return this.success(data);
   }
 
-  async infoAction() {
+    /**
+     * search action
+     * @params productName
+     * @return {Promise} []
+     */
+    async searchAction() {
+        const page =  1;
+        const size =  10;
+        const name = this.get('name') || '';
+        const model = this.model('goods');
+        console.log('name-------------------------: ' + name)
+        let  data = await model.where({name: ['like', `%${name}%`]}).field('id,category_id, name, goods_number, is_on_sale, add_time, sort_order, retail_price, sell_volume, primary_pic_url, is_hot, is_limited').order(['id DESC']).countSelect();
+        return this.success(data);
+    }
+
+
+    async infoAction() {
     const id = this.get('id');
     const model = this.model('goods');
     const data = await model.where({id: id}).find();
