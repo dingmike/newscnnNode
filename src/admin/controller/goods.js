@@ -38,15 +38,16 @@ module.exports = class extends Base {
     }
 
     /**
-     * down goods action
+     * down up goods action
      * @params id
      * @return {Promise} []
      */
     async downUpAction() {
         const id = this.post('id');
         const is_on_sale = this.post('isOnSale');
+
         const model = this.model('goods');
-        console.log('name-------------------------: ' + name)
+        console.log('id is -------------------------: ' + id)
         let data = await model.where({id: id}).update({is_on_sale: is_on_sale});
         return this.success(data);
     }
