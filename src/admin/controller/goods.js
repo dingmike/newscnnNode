@@ -47,8 +47,21 @@ module.exports = class extends Base {
         const is_on_sale = this.post('isOnSale');
 
         const model = this.model('goods');
-        console.log('id is -------------------------: ' + id)
+        console.log('update good\'s downUp stats id is -------------------------: ' + id)
         let data = await model.where({id: id}).update({is_on_sale: is_on_sale});
+        return this.success(data);
+    }
+
+    /**
+     * delete goods action
+     * @params id
+     * @return {Promise} []
+     */
+    async deleteAction() {
+        const id = this.post('id');
+        const model = this.model('goods');
+        console.log('delete good\'s id is -------------------------: ' + id)
+        let data = await model.where({id: id}).limit(1).delete();
         return this.success(data);
     }
 
