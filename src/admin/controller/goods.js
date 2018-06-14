@@ -11,7 +11,7 @@ module.exports = class extends Base {
     const name = this.get('name') || '';
     const isOnSale = this.get('isOnSale');
     const model = this.model('goods');
-    let  data;
+    let data;
     console.log('isOnSale-------------------------: ' + isOnSale)
     if(isOnSale === 'null'||isOnSale === ''||isOnSale === null||isOnSale === undefined||isOnSale === 'undefined'){
          data = await model.where({name: ['like', `%${name}%`]}).field('id,category_id, name, goods_number, is_on_sale, add_time, sort_order, retail_price, sell_volume, primary_pic_url, is_hot, is_limited').order(['id DESC']).page(page, size).countSelect();
@@ -29,10 +29,8 @@ module.exports = class extends Base {
     async detailAction() {
         const id = this.get('id');
         const model = this.model('goods');
-        let  data;
-        console.log('isOnSale-------------------------: ' + isOnSale)
+        console.log('good\'s id is  -------------------------: ' + id)
         let data = await model.where({id: id}).find();
-
         return this.success(data);
     }
 
