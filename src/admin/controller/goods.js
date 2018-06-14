@@ -23,6 +23,20 @@ module.exports = class extends Base {
   }
 
     /**
+     * detail action
+     * @return {Promise} []
+     */
+    async detailAction() {
+        const id = this.get('id');
+        const model = this.model('goods');
+        let  data;
+        console.log('isOnSale-------------------------: ' + isOnSale)
+        let data = await model.where({id: id}).find();
+
+        return this.success(data);
+    }
+
+    /**
      * search action
      * @params productName
      * @return {Promise} []
