@@ -1,4 +1,13 @@
 // default config
+
+/*const https = require('https');
+const fs = require('fs');
+const options = {
+    key: fs.readFileSync('test/fixtures/keys/agent2-key.pem'),
+    cert: fs.readFileSync('test/fixtures/keys/agent2-cert.pem')
+};*/
+
+
 module.exports = {
   default_module: 'api',
   weixin: {
@@ -13,5 +22,9 @@ module.exports = {
     appid: '', // 对应快递鸟用户后台 用户ID
     appkey: '', // 对应快递鸟用户后台 API key
     request_url: 'http://api.kdniao.cc/Ebusiness/EbusinessOrderHandle.aspx'
-  }
+  },
+    // 只需要创建服务，不需要 listen
+    /*createServer: function(callback){
+        return https.createServer(options, callback);
+    }*/
 };

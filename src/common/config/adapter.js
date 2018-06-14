@@ -16,9 +16,9 @@ exports.cache = {
   },
   file: {
     handle: fileCache,
-    cachePath: path.join(think.ROOT_PATH, 'runtime/cache'), // absoulte path is necessarily required
+    cachePath: path.join(think.ROOT_PATH, 'runtime/cache'), // absoulte path is necessarily required // 缓存文件存放的路径
     pathDepth: 1,
-    gcInterval: 24 * 60 * 60 * 1000 // gc interval
+    gcInterval: 24 * 60 * 60 * 1000 // gc interval 清理过期缓存定时时间
   }
 };
 

@@ -27,11 +27,75 @@ module.exports = class extends Base {
      * @return {Promise} []
      */
     async detailAction() {
-        const id = this.get('id');
+
+        const goodsId = this.get('id');
         const model = this.model('goods');
-        console.log('good\'s id is  -------------------------: ' + id)
-        let data = await model.where({id: id}).find();
-        return this.success(data);
+
+        console.log('goodsId:-------------------' +  goodsId)
+
+        const info = await model.where({'id': goodsId}).find();
+        const gallery = await this.model('goods_gallery').where({goods_id: goodsId}).limit(4).select();
+        const attribute = await this.model('goods_attribute').field('nideshop_goods_attribute.value, nideshop_attribute.name').join('nideshop_attribute ON nideshop_goods_attribute.attribute_id=nideshop_attribute.id').order({'nideshop_goods_attribute.id': 'asc'}).where({'nideshop_goods_attribute.goods_id': goodsId}).select();
+        const issue = await this.model('goods_issue').select();
+
+        const specificationList =  await model.getSpecificationList(goodsId)
+
+        const brand = await this.model('brand').where({id: info.brand_id}).find();
+        const commentCount = await this.model('comment').where({value_id: goodsId, type_id: 0}).count();
+        const hotComment = await this.model('comment').where({value_id: goodsId, type_id: 0}).find();
+        let commentInfo = {};
+        if (!think.isEmpty(hotComment)) {
+            const commentUser = await this.model('user').field(['nickname', 'username', 'avatar']).where({id: hotComment.user_id}).find();
+            commentInfo = {
+                content: Buffer.from(hotComment.content, 'base64').toString(),
+                add_time: think.datetime(new Date(hotComment.add_time * 1000)),
+                nickname: commentUser.nickname,
+                avatar: commentUser.avatar,
+                pic_list: await this.model('comment_picture').where({comment_id: hotComment.id}).select()
+            };
+        }
+
+        const comment = {
+            count: commentCount,
+            data: commentInfo
+        };
+
+        // 当前用户是否收藏
+        // const userHasCollect = await this.model('collect').isUserHasCollect(think.userId, 0, goodsId);
+
+        // 记录用户的足迹 TODO
+        // await await this.model('footprint').addFootprint(think.userId, goodsId);
+
+        // return this.json(jsonData);
+        // 构造gallery为[{name:'', url:''},...]
+        let galleryImgs = [];
+        for(let i = 0; i < gallery.length; i++){
+            let obj = {name: "", url: ''};
+            obj.name = gallery[i].img_desc;
+            obj.url = gallery[i].img_url;
+            galleryImgs.push(obj);
+        }
+
+       /* for (let i = 0; i< specificationList.length; i++){
+            specificationList[i]['isShowValue'] = false;
+            for(let j = 0; j< specificationList[i].valueList.length; j++){
+                console.log('isHSow set------------------' + specificationList[i].valueList[j].goods_id)
+                specificationList[i][j]['isShow'] = false;
+            }
+        }*/
+
+
+
+        return this.success({
+            info: info,
+            gallery: galleryImgs,
+            attribute: attribute,
+            issue: issue,
+            comment: comment,
+            brand: brand,
+            specificationList: specificationList,
+            productList: await model.getProductList(goodsId)
+        });
     }
 
     /**
