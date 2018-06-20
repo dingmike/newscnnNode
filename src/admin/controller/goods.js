@@ -142,6 +142,8 @@ module.exports = class extends Base {
     }
 
 
+
+
     /**
      * update goods hot state action
      * @params id
@@ -155,6 +157,35 @@ module.exports = class extends Base {
         let data = await model.where({id: id}).update({is_hot: is_hot});
         return this.success(data);
     }
+
+
+
+    /**
+     * get specifications action
+     * @params
+     * @return {Promise} []
+     */
+    async getSpecificationsAction() {
+        const model = this.model('specification');
+        let data = await model.select();
+        return this.success(data);
+    }
+
+
+    /**
+     * use id get goods specification value action
+     * @params id
+     * @return {Promise} []
+     */
+    async getSpecValueAction() {
+        const sepcification_id = this.get('specId');
+        const model = this.model('goods_specification');
+        let data = await model.where({specification_id: sepcification_id}).select();
+        return this.success(data);
+    }
+
+
+
 
 
     async infoAction() {
