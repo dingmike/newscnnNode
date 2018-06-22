@@ -184,9 +184,7 @@ module.exports = class extends Base {
         return this.success(data);
     }
 
-
-
-
+    
 
     async infoAction() {
     const id = this.get('id');
